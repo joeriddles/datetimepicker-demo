@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>DateTimePicker Demo</title>
+</head>
+<body>
+    <p id="datetimepicker-container" style="text-align: center;">
+        <input id="datetimepicker" type="text" value="2014/03/15 05:06">
+    </p>
+</body>
+<!-- JQuery DateTimePicker -->
+<link rel="stylesheet" type="text/css" href="./datetimepicker-master/build/jquery.datetimepicker.min.css"/>
+<script src="./datetimepicker-master/jquery.js"></script>
+<script src="./datetimepicker-master/build/jquery.datetimepicker.full.js"></script>
+<!-- Luxon -->
+<script src="./luxon.js"></script>
+<script>
+    const FORMAT = "LL-dd-yyyy h:mm a"
+
+    const containerElement = document.getElementById("datetimepicker-container")
+
+    function parseDate(date, _format) {
+        const datetime = luxon.DateTime.fromFormat(date, FORMAT)
+        const jsDate = datetime.toJSDate()
+        return jsDate
+    }
+
+    function formatDate(date, _format) {
+        const datetime = luxon.DateTime.fromJSDate(date); 
+        const formattedDateTime = datetime.toFormat(FORMAT)
+        return formattedDateTime
+    }
+
+    $.datetimepicker.setDateFormatter({
+        parseDate,
+        formatDate,
+    })
+
+    jQuery('#datetimepicker').datetimepicker({
+        format: "m-d-Y g:i A",  // "01-30-2023 3:00 PM"
+        formatTime: "g:i A",
+        onChangeDateTime: (dp, $input) => {
+            const jsDate = parseDate($input.val(), FORMAT)
+            const isoString = jsDate.toISOString()
+            console.log(isoString)
+
+            const newDiv = document.createElement("div")
+            newDiv.textContent = isoString
+            containerElement.appendChild(newDiv)
+        }
+    });
+</script>
+</html>
